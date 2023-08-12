@@ -25,7 +25,12 @@
 <script setup lang="ts">
 
 import {ref} from 'vue'
+import fctQuiz
 const isSeleted = ref<boolean>(true)
+
+const {
+    contentQuiz
+} = fctQuizApp()
 </script>
 
 <style scoped>
