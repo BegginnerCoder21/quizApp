@@ -3,5 +3,5 @@ export default interface typeContentQuiz{
     answer:number,
     question:string,
     responses:string[],
-    selected:boolean
+    selected:number,
 }
