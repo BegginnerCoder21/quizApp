@@ -20,9 +20,10 @@
                 >
                 {{ option }}
             </label>
-            <button :disabled="contentQuizApp?.selected == -1" v-if="contentQuizApp?.selected == -1">SELECT AN OPTION</button>
-            <button v-if="!isEnd && contentQuizApp?.selected != -1 " @click="nextQuestion">NEXT QUESTION</button>
-            <button v-if="isEnd  && contentQuizApp?.selected != -1" @click="is_End">FINISH</button>
+            <button :disabled="contentQuizApp?.selected == -1" @click="nextQuestion">
+               {{ contentQuizApp?.index == userScore -1 ? 'FINNISH' : contentQuizApp?.selected == -1 ? 'SELECT AN OPTION' : 'NEXT QUESTION'}}
+            
+            </button>
         </div>
         <section class="styleresult" v-if="resultShow">
             <h1>Vous avez obtenus un score de {{ score }} / {{ userScore }}</h1>
@@ -31,51 +32,27 @@
 </template>
 
 <script setup lang="ts">
-
-import {ref,onMounted,computed} from 'vue'
-import fctQuizApp from '@/components/quizApp/index'
 import type typeContentQuiz from '@/types';
-const contentQuizApp = ref(); 
-const isEnd = ref<boolean>(false)
-const values = ref<number>(0);
-const userScore = ref<number>(0)
-const resultShow = ref<boolean>(false)
-
-
-const stylebutton = (e:Event) => {
-    contentQuizApp.value.selected = e.target?.value;
-    
-}
-const nextQuestion = () => {
-    contentQuizApp.value = contentQuiz.value[values.value];
-    values.value++;
-    if(values.value == 3){
-        isEnd.value = true
-    }
-}
-
-const is_End  = () => {
-    resultShow.value = true
-}
-
-const score = computed(() => {
-    let val = 0;
-    contentQuiz.value.map((q:typeContentQuiz) => {
-        if(q.answer == q.selected){
-            val ++;
-        }
-    })
-    return val;
-})
-
+import fctQuizApp from '../quizApp';
+import {onMounted} from 'vue'
 
 const {
     contentQuiz,
+    getRandomArbitrary,
+    contentQuizApp,
+    values,
+    userScore,
+    resultShow,
+    stylebutton,
+    score,
+    nextQuestion,
 } = fctQuizApp();
 
 onMounted(() => {
     userScore.value = contentQuiz.value.length; 
-    nextQuestion()
+    contentQuizApp.value = contentQuiz.value[values.value];
+    contentQuizApp.value.index = values.value
+    values.value = 0;
 });
 </script>
 

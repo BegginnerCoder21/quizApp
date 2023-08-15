@@ -1,7 +1,11 @@
 import type typeContentQuiz from '@/types';
-import {ref} from 'vue';
-export default function fctQuizApp() {
+import {ref,onMounted,computed} from 'vue'
 
+export default function fctQuizApp() {
+    const contentQuizApp = ref(); 
+    const values = ref<number>(0);
+    const userScore = ref<number>(0)
+    const resultShow = ref<boolean>(false)
     const contentQuiz = ref<typeContentQuiz[]>([
         {
             id:0,
@@ -31,11 +35,47 @@ export default function fctQuizApp() {
             return Math.round(Math.random() * (max - min) + min);
     }
 
+    const stylebutton = (e:Event) => {
+        contentQuizApp.value.selected = e.target?.value;
+        
+    }
+
+    const score = computed(() => {
+        let val = 0;
+        contentQuiz.value.map((q:typeContentQuiz) => {
+            if(q.answer == q.selected){
+                val ++;
+            }
+        })
+        return val;
+    });
+    
+    const nextQuestion = () => {
+        if(values.value == 2){
+            is_End()
+            return ;
+        }else{
+            values.value++;
+            contentQuizApp.value.index = values.value
+            contentQuizApp.value = contentQuiz.value[values.value];
+        }
+    }
+    
+    const is_End  = () => {
+        resultShow.value = true
+    }
     
 
 
     return {
         contentQuiz,
         getRandomArbitrary,
+        contentQuizApp,
+        values,
+        userScore,
+        resultShow,
+        stylebutton,
+        score,
+        nextQuestion,
     }
 }
